@@ -4,13 +4,8 @@ const express = require('express');
 
 // App Setup
 const app = express();
-require('./controllers/posts.js')(app);
 // Middleware
 const exphbs  = require('express-handlebars');
-
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
-
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 
@@ -21,17 +16,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Add after body parser initialization!
 app.use(expressValidator());
 
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+
 // Set db
 require('./data/reddit-db');
 
 // Routes
-app.get('/', (req, res) => {
-    res.render('layouts/main.handlebars');
-  });
+// app.get('/', (req, res) => {
+//     res.render('layouts/main.handlebars');
+//   });
 
-app.get('/posts/new', (req, res) => {
-    res.render('posts-new.handlebars')
-})
+app.get("/posts/new", (req, res) => res.render("posts-new"));
+
+
+//Controllers
+require("./controllers/posts")(app);
 
 // Start Server
 
