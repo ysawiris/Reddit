@@ -5,7 +5,7 @@ const express = require('express');
 // App Setup
 const app = express();
 // Middleware
-const exphbs  = require('express-handlebars');
+const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 
@@ -32,11 +32,12 @@ app.get("/posts/new", (req, res) => res.render("posts-new"));
 
 //Controllers
 require("./controllers/posts")(app);
+require('./controllers/comments.js')(app);
 
 // Start Server
 
 app.listen(3000, () => {
-  console.log('Reddit listening on port localhost:3000!');
+    console.log('Reddit listening on port localhost:3000!');
 });
 
 module.exports = app;
