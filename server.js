@@ -29,6 +29,21 @@ app.use(cookieParser()); // Add this after you initialize express.
 // Set db
 require('./data/reddit-db');
 
+
+const checkAuth = (req, res, next) => {
+    console.log("Checking authentication");
+    if (typeof req.cookies.nToken === "undefined" || req.cookies.nToken === null) {
+        req.user = null;
+    } else {
+        const token = req.cookies.nToken;
+        const decodedToken = jwt.decode(token, { complete: true }) || {};
+        req.user = decodedToken.payload;
+    }
+
+    next();
+};
+app.use(checkAuth);
+
 // Routes
 // app.get('/', (req, res) => {
 //     res.render('layouts/main.handlebars');
