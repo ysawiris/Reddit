@@ -13,10 +13,13 @@ module.exports = (app) => {
             post
                 .save()
                 .then(post => {
-                    return User.findById(req.user._id);
+                    console.log(`The post: ${post}`)
+                    return User.findById(post.author);
                 })
                 .then(user => {
+                    console.log(`The user: ${user}`)
                     user.posts.unshift(post);
+                    console.log(`The array: ${user.posts}`)
                     user.save();
                     // REDIRECT TO THE NEW POST
                     res.redirect(`/posts/${post._id}`);

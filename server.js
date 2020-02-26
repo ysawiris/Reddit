@@ -1,22 +1,19 @@
-require('dotenv').config();
-
 // Require Libraries
 const express = require('express');
 
-const cookieParser = require('cookie-parser');
+var cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
-
 
 // App Setup
 const app = express();
+
+app.use(cookieParser()); // Add this after you initialize express.
+
+require('dotenv').config();
 // Middleware
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
-
-// Use Body Parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 
 // Add after body parser initialization!
 app.use(expressValidator());
@@ -24,24 +21,30 @@ app.use(expressValidator());
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
-app.use(cookieParser()); // Add this after you initialize express.
+
+
+// Use Body Parser
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Set db
 require('./data/reddit-db');
 
 
-const checkAuth = (req, res, next) => {
+var checkAuth = (req, res, next) => {
     console.log("Checking authentication");
     if (typeof req.cookies.nToken === "undefined" || req.cookies.nToken === null) {
         req.user = null;
     } else {
-        const token = req.cookies.nToken;
-        const decodedToken = jwt.decode(token, { complete: true }) || {};
+        var token = req.cookies.nToken;
+        var decodedToken = jwt.decode(token, { complete: true }) || {};
         req.user = decodedToken.payload;
     }
 
     next();
 };
+
+
 app.use(checkAuth);
 
 // Routes
@@ -49,7 +52,12 @@ app.use(checkAuth);
 //     res.render('layouts/main.handlebars');
 //   });
 
-app.get("/posts/new", (req, res) => res.render("posts-new"));
+app.get("/posts/new", (req, res) => {
+    const currentUser = req.user._id;
+    res.render("posts-new", {
+        currentUser
+    })
+});
 
 
 //Controllers
