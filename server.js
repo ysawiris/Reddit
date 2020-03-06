@@ -22,6 +22,7 @@ app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
 
+app.use(express.static('public'));
 
 // Use Body Parser
 app.use(bodyParser.json());
